@@ -1,0 +1,24 @@
+<assembly>
+    <id>pkg</id>
+
+    <formats>
+        <format>zip</format>
+    </formats>
+
+    <fileSets>
+        <fileSet>
+            <directory>src/main/shell</directory>
+            <outputDirectory></outputDirectory>
+            <filtered>true</filtered>
+        </fileSet>
+        <fileSet>
+            <directory>${basedir}/target</directory>
+            <outputDirectory>lib</outputDirectory>
+            <includes>
+                <include>*-shaded.jar</include>
+            </includes>
+        </fileSet>
+
+    </fileSets>
+
+</assembly>
