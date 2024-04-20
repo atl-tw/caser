@@ -77,7 +77,7 @@ jobs:
           asset_path: ./target/${{ steps.projectInfo.outputs.PROJECT_ARTIFACT }}-${{ steps.projectInfo.outputs.PROJECT_VERSION }}-anyos.zip
           asset_name: ${{ steps.projectInfo.outputs.PROJECT_ARTIFACT }}-${{ steps.projectInfo.outputs.PROJECT_VERSION }}-anyos.zip
           asset_content_type: application/zip
-      - name: Upload EXE
+      - name: Upload TGZ
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ github.token }}
@@ -95,13 +95,13 @@ jobs:
           asset_path: ./target/${{ steps.projectInfo.outputs.PROJECT_ARTIFACT }}-${{ steps.projectInfo.outputs.PROJECT_VERSION }}-installer.exe
           asset_name: ${{ steps.projectInfo.outputs.PROJECT_ARTIFACT }}-${{ steps.projectInfo.outputs.PROJECT_VERSION }}-installer.exe
           asset_content_type: application/tar+gzip
-      - name: Upload EXE
+      - name: Upload Bin
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./target/${{ steps.projectInfo.outputs.PROJECT_ARTIFACT }}-${{ steps.projectInfo.outputs.PROJECT_VERSION }}-Linux-amd64.bin
+          asset_path: ./target/${{ steps.projectInfo.outputs.PROJECT_ARTIFACT }}-${{ steps.projectInfo.outputs.PROJECT_VERSION }}-Linux-amd64
           asset_name: ${{ steps.projectInfo.outputs.PROJECT_ARTIFACT }}-${{ steps.projectInfo.outputs.PROJECT_VERSION }}-Linux-amd64.bin
           asset_content_type: application/octet-stream
       - name: Upload Hashes
