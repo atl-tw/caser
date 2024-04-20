@@ -22,7 +22,7 @@ jobs:
       - name: Store Project Information
         id: projectInfo
         run: |
-          PROJECT_VERSION=$(xmllint --xpath '/*[local-name()="project"]/*[local-name()="version"]/text()' pom.xml | sed 's/-SNAPSHOT/.${{github.run_number}}/)
+          PROJECT_VERSION=$(xmllint --xpath '/*[local-name()="project"]/*[local-name()="version"]/text()' pom.xml | sed 's/-SNAPSHOT/.${{github.run_number}}'/)
           echo "PROJECT_VERSION=${PROJECT_VERSION}" 
           echo "PROJECT_VERSION=${PROJECT_VERSION}" >> $GITHUB_OUTPUT
           PROJECT_ARTIFACT=$(xmllint --xpath '/*[local-name()="project"]/*[local-name()="artifactId"]/text()' pom.xml)
