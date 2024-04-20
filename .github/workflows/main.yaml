@@ -30,8 +30,11 @@ jobs:
           echo "PROJECT_ARTIFACT=${PROJECT_ARTIFACT}"
           echo "PROJECT_ARTIFACT=${PROJECT_ARTIFACT}" >> $GITHUB_OUTPUT
           git config --global --add safe.directory `pwd`
-      - uses: sdkman/sdkman-action@main
-        id: sdkman
+      - uses: graalvm/setup-graalvm@v1
+        with:
+          java-version: '22'
+          distribution: 'graalvm'
+          github-token: ${{ github.token }}
       - run: which java && java -version
       - name: Set Version
         run: |
