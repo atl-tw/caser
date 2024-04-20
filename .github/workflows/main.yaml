@@ -57,36 +57,42 @@ jobs:
           name: ${{ needs.project-info.outputs.PROJECT_ARTIFACT }}-${{ needs.project-info.outputs.PROJECT_VERSION }}.jar
           path: ./target/${{ needs.project-info.outputs.PROJECT_ARTIFACT }}-${{ needs.project-info.outputs.PROJECT_VERSION }}.jar
           retention-days: 1
+          if-no-files-found: error
       - name: 'Upload Shaded'
         uses: actions/upload-artifact@v4
         with:
           name: ${{ needs.project-info.outputs.PROJECT_ARTIFACT }}-${{ needs.project-info.outputs.PROJECT_VERSION }}-shaded.jar
           path: ./target/${{ needs.project-info.outputs.PROJECT_ARTIFACT }}-${{ needs.project-info.outputs.PROJECT_VERSION }}-shaded.jar
           retention-days: 1
+          if-no-files-found: error
       - name: 'Upload Zip'
         uses: actions/upload-artifact@v4
         with:
           name: ${{ needs.project-info.outputs.PROJECT_ARTIFACT }}-${{ needs.project-info.outputs.PROJECT_VERSION }}-anyos.zip
           path:  ./target/${{ needs.project-info.outputs.PROJECT_ARTIFACT }}-${{ needs.project-info.outputs.PROJECT_VERSION }}-anyos.zip
           retention-days: 1
+          if-no-files-found: error
       - name: 'Upload TGZ'
         uses: actions/upload-artifact@v4
         with:
           name: ${{ needs.project-info.outputs.PROJECT_ARTIFACT }}-${{ needs.project-info.outputs.PROJECT_VERSION }}-anyos.tar.gz
           path: ./target/${{ needs.project-info.outputs.PROJECT_ARTIFACT }}-${{ needs.project-info.outputs.PROJECT_VERSION }}-anyos.tar.gz
           retention-days: 1
+          if-no-files-found: error
       - name: 'Upload Windows Installer'
         uses: actions/upload-artifact@v4
         with:
           name: ${{ needs.project-info.outputs.PROJECT_ARTIFACT }}-${{ needs.project-info.outputs.PROJECT_VERSION }}-installer.exe
           path: ./target/${{ needs.project-info.outputs.PROJECT_ARTIFACT }}-${{ needs.project-info.outputs.PROJECT_VERSION }}-installer.exe
           retention-days: 1
+          if-no-files-found: error
       - name: 'Upload Linux Binary'
         uses: actions/upload-artifact@v4
         with:
           name: ${{ needs.project-info.outputs.PROJECT_ARTIFACT }}-${{ needs.project-info.outputs.PROJECT_VERSION }}-Linux-amd64.bin
           path: ./target/${{ needs.project-info.outputs.PROJECT_ARTIFACT }}-${{ needs.project-info.outputs.PROJECT_VERSION }}-Linux-amd64
           retention-days: 1
+          if-no-files-found: error
 
 
   windows-build:
@@ -102,6 +108,9 @@ jobs:
           distribution: 'graalvm'
           github-token: ${{ github.token }}
       - run: java -version
+      - name: Set Version
+        run: |
+          ./mvnw -U --batch-mode versions:set dependency:tree -DnewVersion=${{ needs.project-info.outputs.PROJECT_VERSION }}
       - name: Build
         run: ./mvnw --batch-mode -Pnative -Dagent=true  clean package && ls target
       - name: 'Upload Windows Binary'
@@ -110,6 +119,7 @@ jobs:
           name: ${{ needs.project-info.outputs.PROJECT_ARTIFACT }}-${{ needs.project-info.outputs.PROJECT_VERSION }}-Windows-amd64.exe
           path: ./target/${{ needs.project-info.outputs.PROJECT_ARTIFACT }}-${{ needs.project-info.outputs.PROJECT_VERSION }}-Windows-amd64.exe
           retention-days: 1
+          if-no-files-found: error
   mac-build:
     needs: project-info
     runs-on: macos-latest
@@ -123,6 +133,9 @@ jobs:
           github-token: ${{ github.token }}
       - run: java -version
       - run: brew install makensis
+      - name: Set Version
+        run: |
+          ./mvnw -U --batch-mode versions:set dependency:tree -DnewVersion=${{ needs.project-info.outputs.PROJECT_VERSION }}
       - name: Build
         run: ./mvnw --batch-mode -Pnative -Dagent=true clean package && ls target
       - name: 'Upload Mac Binary'
@@ -130,6 +143,9 @@ jobs:
         with:
           name: ${{ needs.project-info.outputs.PROJECT_ARTIFACT }}-${{ needs.project-info.outputs.PROJECT_VERSION }}-Mac-x86_64.bin
           path: ./target/${{ needs.project-info.outputs.PROJECT_ARTIFACT }}-${{ needs.project-info.outputs.PROJECT_VERSION }}-Mac-x86_64
+          retention-days: 1
+          if-no-files-found: error
+
           
   release:
     runs-on: ubuntu-latest
