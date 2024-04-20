@@ -32,7 +32,7 @@ jobs:
           git config --global --add safe.directory `pwd`
       - uses: sdkman/sdkman-action@main
         id: sdkman
-      - run: java -version
+      - run: which java && java -version
       - name: Set Version
         run: |
          ./mvnw -U --batch-mode versions:set dependency:tree -DnewVersion=${{ steps.projectInfo.outputs.PROJECT_VERSION }}
@@ -85,6 +85,15 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./target/${{ steps.projectInfo.outputs.PROJECT_ARTIFACT }}-${{ steps.projectInfo.outputs.PROJECT_VERSION }}-anyos.tar.gz
           asset_name: ${{ steps.projectInfo.outputs.PROJECT_ARTIFACT }}-${{ steps.projectInfo.outputs.PROJECT_VERSION }}-anyos.tar.gz
+          asset_content_type: application/tar+gzip
+      - name: Upload EXE
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./target/${{ steps.projectInfo.outputs.PROJECT_ARTIFACT }}-${{ steps.projectInfo.outputs.PROJECT_VERSION }}-installer.exe
+          asset_name: ${{ steps.projectInfo.outputs.PROJECT_ARTIFACT }}-${{ steps.projectInfo.outputs.PROJECT_VERSION }}-installer.exe
           asset_content_type: application/tar+gzip
       - name: Upload EXE
         uses: actions/upload-release-asset@v1
