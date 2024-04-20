@@ -36,7 +36,7 @@ jobs:
         run: |
          ./mvnw -U --batch-mode versions:set dependency:tree -DnewVersion=${{ steps.projectInfo.outputs.PROJECT_VERSION }}
       - name: Build
-        run: ./mvnw --batch-model clean install
+        run: ./mvnw --batch-mode clean install
       - name: release
         uses: actions/create-release@v1
         id: create_release
