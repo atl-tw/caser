@@ -110,7 +110,7 @@ jobs:
       - run: java -version
       - name: Set Version
         run: |
-          ./mvnw -U --batch-mode versions:set dependency:tree -DnewVersion=${{ needs.project-info.outputs.PROJECT_VERSION }}
+          ./mvnw -U --batch-mode versions:set dependency:tree "-DnewVersion=${{ needs.project-info.outputs.PROJECT_VERSION }}"
       - name: Build
         run: ./mvnw --batch-mode -Pnative -Dagent=true  clean package && ls target
       - name: 'Upload Windows Binary'
