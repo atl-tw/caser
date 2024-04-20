@@ -29,7 +29,7 @@ jobs:
           echo "PROJECT_ARTIFACT=${PROJECT_ARTIFACT}"
           echo "PROJECT_ARTIFACT=${PROJECT_ARTIFACT}" >> $GITHUB_OUTPUT
           git config --global --add safe.directory `pwd`
-      - uses: sdkman/sdkman-action@v1
+      - uses: sdkman/sdkman-action@main
         id: sdkman
       - run: java -version
       - name: Set Version
