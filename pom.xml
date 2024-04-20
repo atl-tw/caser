@@ -353,7 +353,7 @@
                             <fallback>false</fallback>
                             <buildArgs>
                                 <buildArg>-H:DashboardDump=${project.artifactId} -H:+DashboardAll
-                                    --enable-sbom -H:IncludeSBOM=cyclonedx
+                                    --enable-sbom -H:IncludeSBOM=cyclonedx -march=compatibility
                                 </buildArg>
                             </buildArgs>
                             <agent>
