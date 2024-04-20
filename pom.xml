@@ -321,7 +321,7 @@
                                     <artifacts>
                                         <artifact>
                                             <file>
-                                                ${project.build.directory}/${project.artifactId}-${osname.short}-${os.arch}
+                                                ${project.build.directory}/${project.artifactId}-${project.version}-${osname.short}-${os.arch}
                                             </file>
                                             <type>bin</type>
                                             <classifier>${osname.short}-${os.arch}</classifier>
