@@ -12,6 +12,7 @@ jobs:
     outputs:
       PROJECT_ARTIFACT: ${{ steps.projectInfo.outputs.PROJECT_ARTIFACT }}
       PROJECT_VERSION: ${{ steps.projectInfo.outputs.PROJECT_VERSION }}
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
@@ -36,7 +37,7 @@ jobs:
         run: |
          ./mvnw -U --batch-mode versions:set dependency:tree -DnewVersion=${{ steps.projectInfo.outputs.PROJECT_VERSION }}
       - name: Build
-        run: ./mvnw --batch-mode clean install
+        run: ./mvnw --batch-mode -Pnative -Dagent=true clean install
       - name: release
         uses: actions/create-release@v1
         id: create_release
