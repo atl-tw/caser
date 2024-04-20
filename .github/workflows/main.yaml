@@ -115,22 +115,17 @@ jobs:
           asset_content_type: text/plain
 
   windows-build:
-    needs: maven-build
+    # needs: maven-build
     runs-on: windows-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
-      - uses: sdkman/sdkman-action@main
-        id: sdkman
+      - uses: ilammy/msvc-dev-cmd@v1
+      - uses: graalvm/setup-graalvm@v1
         with:
-          candidate: java
-          version: 15.0.0-amzn
-      - uses: actions/setup-java@v3
-        id: setup-java
-        with:
-          distribution: 'jdkfile'
-          java-version: 22.0.1-graal
-          jdkFile: ${{ steps.sdkman.outputs.file }}
+          java-version: '22'
+          distribution: 'graalvm'
+          github-token: ${{ github.token }}
       - run: java -version
 
 
