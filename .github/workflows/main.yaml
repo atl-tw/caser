@@ -118,7 +118,7 @@ jobs:
           asset_content_type: text/plain
 
   windows-build:
-    needs: maven-build
+    needs: linux-build
     runs-on: windows-latest
     steps:
       - name: Checkout Code
@@ -137,12 +137,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
-          upload_url: ${{needs.maven-build.outputs.upload_url }}
-          asset_path: ./target/${{ needs.maven-build.outputs.PROJECT_ARTIFACT }}-Windows-amd64.exe
-          asset_name: ${{ needs.maven-build.outputs.PROJECT_ARTIFACT }}-${{ needs.maven-build.outputs.PROJECT_VERSION }}-Windows-amd64.exe
+          upload_url: ${{needs.linux-build.outputs.upload_url }}
+          asset_path: ./target/${{ needs.linux-build.outputs.PROJECT_ARTIFACT }}-Windows-amd64.exe
+          asset_name: ${{ needs.linux-build.outputs.PROJECT_ARTIFACT }}-${{ needs.linux-build.outputs.PROJECT_VERSION }}-Windows-amd64.exe
           asset_content_type: application/octet-stream
   mac-build:
-    needs: maven-build
+    needs: linux-build
     runs-on: macos-latest
     steps:
       - name: Checkout Code
@@ -161,7 +161,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
-          upload_url: ${{needs.maven-build.outputs.upload_url }}
-          asset_path: ./target/${{ needs.maven-build.outputs.PROJECT_ARTIFACT }}-Mac-x86_64
-          asset_name: ${{ needs.maven-build.outputs.PROJECT_ARTIFACT }}-${{ needs.maven-build.outputs.PROJECT_VERSION }}-Mac-x86_64
+          upload_url: ${{needs.linux-build.outputs.upload_url }}
+          asset_path: ./target/${{ needs.linux-build.outputs.PROJECT_ARTIFACT }}-Mac-x86_64
+          asset_name: ${{ needs.linux-build.outputs.PROJECT_ARTIFACT }}-${{ needs.linux-build.outputs.PROJECT_VERSION }}-Mac-x86_64
           asset_content_type: application/octet-stream
