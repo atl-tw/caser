@@ -5,7 +5,7 @@ set +x
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
-java $JAVA_OPTS -jar $SCRIPT_DIR/lib/${project.artifactId}-${project.version}-shaded.jar ${1+"$@"}
+java $JAVA_OPTS -cp "$SCRIPT_DIR/lib/*" ${main.class} ${1+"$@"}
 ex_code=$?
 
 echo >&2

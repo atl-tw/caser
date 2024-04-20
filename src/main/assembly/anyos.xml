@@ -1,0 +1,42 @@
+<assembly>
+    <id>anyos</id>
+
+    <formats>
+        <format>dir</format>
+        <format>zip</format>
+        <format>tar.gz</format>
+    </formats>
+
+    <dependencySets>
+        <dependencySet>
+            <outputDirectory>/lib</outputDirectory>
+            <scope>runtime</scope>
+        </dependencySet>
+    </dependencySets>
+
+    <fileSets>
+        <fileSet>
+            <directory>${project.basedir}</directory>
+            <outputDirectory>/</outputDirectory>
+            <includes>
+                <include>README*</include>
+                <include>LICENSE*</include>
+                <include>NOTICE*</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>src/main/shell</directory>
+            <outputDirectory></outputDirectory>
+            <filtered>true</filtered>
+        </fileSet>
+        <fileSet>
+            <directory>${basedir}/target</directory>
+            <outputDirectory>lib</outputDirectory>
+            <includes>
+                <include>${project.artifactId}-${project.version}.jar</include>
+            </includes>
+        </fileSet>
+
+    </fileSets>
+
+</assembly>

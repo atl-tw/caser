@@ -12,7 +12,7 @@ Section
 SetOutPath $INSTDIR
 
 # define what to install and place it in the output path
-File lib\@artifactId@-@version@-shaded.jar
+File lib\*
 File @artifactId@.cmd
 
 SectionEnd

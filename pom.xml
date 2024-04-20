@@ -18,7 +18,7 @@
         <junit.version>5.10.2</junit.version>
         <native.maven.plugin.version>0.9.28</native.maven.plugin.version>
         <imageName>caser</imageName>
-        <mainClass>com.thoughtworks.caser.App</mainClass>
+        <main.class>com.thoughtworks.caser.App</main.class>
     </properties>
 
     <dependencies>
@@ -110,7 +110,7 @@
                     <transformers>
                         <transformer
                                 implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                            <mainClass>${mainClass}</mainClass>
+                            <mainClass>${main.class}</mainClass>
                         </transformer>
                     </transformers>
                 </configuration>
@@ -135,18 +135,18 @@
                 </configuration>
                 <executions>
                     <execution>
-                        <id>pkg</id>
+                        <id>anyos</id>
                         <phase>package</phase>
                         <goals>
                             <goal>single</goal>
                         </goals>
                         <configuration>
                             <finalName>${project.artifactId}_${project.version}</finalName>
-                            <appendAssemblyId>false</appendAssemblyId>
+                            <appendAssemblyId>true</appendAssemblyId>
                             <attach>true</attach>
                             <descriptors>
                                 <!-- All the details on how to make the distribution zip -->
-                                <descriptor>src/main/assembly/pkg.xml</descriptor>
+                                <descriptor>src/main/assembly/anyos.xml</descriptor>
                             </descriptors>
                         </configuration>
                     </execution>
@@ -168,7 +168,7 @@
                 <configuration>
                     <file>src/main/nsis/install.nsi</file>
                     <outputFile>
-                        target/${project.artifactId}_${project.version}/${project.artifactId}_${project.version}/install.nsi
+                        target/${project.artifactId}_${project.version}-anyos/${project.artifactId}_${project.version}/install.nsi
                     </outputFile>
                     <replacements>
                         <replacement>
@@ -202,7 +202,7 @@
                         <configuration>
                             <attachArtifact>true</attachArtifact>
                             <scriptFile>
-                                target/${project.artifactId}_${project.version}/${project.artifactId}_${project.version}/install.nsi
+                                target/${project.artifactId}_${project.version}-anyos/${project.artifactId}_${project.version}/install.nsi
                             </scriptFile>
                             <outputFile>${project.artifactId}-${project.version}-installer.exe</outputFile>
                             <attachArtifact>false</attachArtifact>
@@ -328,7 +328,7 @@
                                     <arguments>
                                         <argument>-classpath</argument>
                                         <classpath/>
-                                        <argument>${mainClass}</argument>
+                                        <argument>${main.class}</argument>
                                         <argument>-i</argument>
                                         <argument>lower-hyphen</argument>
                                         <argument>-o</argument>
