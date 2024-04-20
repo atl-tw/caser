@@ -139,4 +139,29 @@ jobs:
         with:
           upload_url: ${{needs.maven-build.outputs.upload_url }}
           asset_path: ./target/${{ needs.maven-build.outputs.PROJECT_ARTIFACT }}-Windows-amd64.exe
-          asset_name: ${{ needs.maven-build.outputs.PROJECT_ARTIFACT }}-${{ needs.maven-build.outputs.PROJECT_VERSION }}-Linux-amd64.exe
+          asset_name: ${{ needs.maven-build.outputs.PROJECT_ARTIFACT }}-${{ needs.maven-build.outputs.PROJECT_VERSION }}-Windows-amd64.exe
+          asset_content_type: application/octet-stream
+  mac-build:
+    needs: maven-build
+    runs-on: macos-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+      - uses: ilammy/msvc-dev-cmd@v1
+      - uses: graalvm/setup-graalvm@v1
+        with:
+          java-version: '22'
+          distribution: 'graalvm'
+          github-token: ${{ github.token }}
+      - run: java -version
+      - name: Build
+        run: ./mvnw --batch-mode -Pnative -Dagent=true "-Dosname.short=Windows" clean package && ls target
+      - name: Upload Bin
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{needs.maven-build.outputs.upload_url }}
+          asset_path: ./target/${{ needs.maven-build.outputs.PROJECT_ARTIFACT }}-Mac>-amd64
+          asset_name: ${{ needs.maven-build.outputs.PROJECT_ARTIFACT }}-${{ needs.maven-build.outputs.PROJECT_VERSION }}-Mac-amd64
+          asset_content_type: application/octet-stream
