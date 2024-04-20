@@ -352,7 +352,7 @@
                             </pluginArtifacts>
                             <fallback>false</fallback>
                             <buildArgs>
-                                <buildArg>-H:DashboardDump=${project.artifactId} -H:+DashboardAll -march=native
+                                <buildArg>-H:DashboardDump=${project.artifactId} -H:+DashboardAll
                                     --enable-sbom -H:IncludeSBOM=cyclonedx
                                 </buildArg>
                             </buildArgs>
