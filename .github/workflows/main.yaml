@@ -131,7 +131,7 @@ jobs:
           github-token: ${{ github.token }}
       - run: java -version
       - name: Build
-        run: ./mvnw --batch-mode -Pnative -Dagent=true "-Dosname.short=Windows" clean package && ls -al target
+        run: ./mvnw --batch-mode -Pnative -Dagent=true "-Dosname.short=Windows" clean package && ls target
       - name: Upload Bin
         uses: actions/upload-release-asset@v1
         env:
