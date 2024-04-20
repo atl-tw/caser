@@ -131,7 +131,7 @@ jobs:
           github-token: ${{ github.token }}
       - run: java -version
       - name: Build
-        run: ./mvnw --batch-mode -Pnative -Dagent=true "-Dosname.short=Windows" clean package && ls target
+        run: ./mvnw --batch-mode -Pnative -Dagent=true  clean package && ls target
       - name: Upload Bin
         uses: actions/upload-release-asset@v1
         env:
@@ -162,6 +162,6 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{needs.maven-build.outputs.upload_url }}
-          asset_path: ./target/${{ needs.maven-build.outputs.PROJECT_ARTIFACT }}-MacOS-x86_64
-          asset_name: ${{ needs.maven-build.outputs.PROJECT_ARTIFACT }}-${{ needs.maven-build.outputs.PROJECT_VERSION }}-MacOS-x86_64
+          asset_path: ./target/${{ needs.maven-build.outputs.PROJECT_ARTIFACT }}-Mac-x86_64
+          asset_name: ${{ needs.maven-build.outputs.PROJECT_ARTIFACT }}-${{ needs.maven-build.outputs.PROJECT_VERSION }}-Mac-x86_64
           asset_content_type: application/octet-stream

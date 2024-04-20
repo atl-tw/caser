@@ -266,7 +266,7 @@
                         <goals>
                             <goal>regex-property</goal>
                         </goals>
-                        <phase>package</phase>
+                        <phase>prepare-package</phase>
                         <configuration>
                             <name>osname.short</name>
                             <value>${os.name}</value>
