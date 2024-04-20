@@ -18,7 +18,7 @@ jobs:
       - name: Install tools
         run: |
           apt-get update
-          apt-get install -y jq git libxml2-utils nsis
+          apt-get install -y jq git libxml2-utils nsis curl
       - name: Store Project Information
         id: projectInfo
         run: |
