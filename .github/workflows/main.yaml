@@ -1,0 +1,107 @@
+name: Package and deploy versions
+
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  maven-build:
+    runs-on: ubuntu-latest
+    outputs:
+      PROJECT_ARTIFACT: ${{ steps.projectInfo.outputs.PROJECT_ARTIFACT }}
+      PROJECT_VERSION: ${{ steps.projectInfo.outputs.PROJECT_VERSION }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+      - name: Install tools
+        run: |
+          apt-get update
+          apt-get install -y jq git libxml2-utils nsis
+      - name: Store Project Information
+        id: projectInfo
+        run: |
+          PROJECT_VERSION=$(xmllint --xpath '/*[local-name()="project"]/*[local-name()="version"]/text()' pom.xml | sed 's/-SNAPSHOT/.${{github.run_number}}/)
+          echo "PROJECT_VERSION=${PROJECT_VERSION}" 
+          echo "PROJECT_VERSION=${PROJECT_VERSION}" >> $GITHUB_OUTPUT
+          PROJECT_ARTIFACT=$(xmllint --xpath '/*[local-name()="project"]/*[local-name()="artifactId"]/text()' pom.xml)
+          echo "PROJECT_ARTIFACT=${PROJECT_ARTIFACT}"
+          echo "PROJECT_ARTIFACT=${PROJECT_ARTIFACT}" >> $GITHUB_OUTPUT
+          git config --global --add safe.directory `pwd`
+      - name: sdkman
+        uses: sdkman/sdkman-action@v1
+        id: sdkman
+        with:
+          candidate: java
+          version: 22.0.1-graal
+      - name: java
+        uses: actions/setup-java@v3
+        id: setup-java
+        with:
+          distribution: 'jdkfile'
+          java-version: 22.0.1
+          jdkFile: ${{ steps.sdkman.outputs.file }}
+      - name: Set Version
+        run: |
+         ./mvnw -U --batch-mode versions:set dependency:tree -DnewVersion=${{ steps.projectInfo.outputs.PROJECT_VERSION }}
+      - name: Build
+        run: ./mvnw --batch-model clean install
+      - name: release
+        uses: actions/create-release@v1
+        id: create_release
+        with:
+          draft: false
+          prerelease: false
+          release_name: ${{ steps.projectInfo.outputs.PROJECT_VERSION }}
+          tag_name: ${{ steps.projectInfo.outputs.PROJECT_VERSION }}
+          body_path: README.md
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - name: Upload JAR
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./target/${{ steps.projectInfo.outputs.PROJECT_ARTIFACT }}-${{ steps.projectInfo.outputs.PROJECT_VERSION }}.jar
+          asset_name: ${{ steps.projectInfo.outputs.PROJECT_ARTIFACT }}-${{ steps.projectInfo.outputs.PROJECT_VERSION }}.jar
+          asset_content_type: application/java-archive
+      - name: Upload Shaded JAR
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./target/${{ steps.projectInfo.outputs.PROJECT_ARTIFACT }}-${{ steps.projectInfo.outputs.PROJECT_VERSION }}-shaded.jar
+          asset_name: ${{ steps.projectInfo.outputs.PROJECT_ARTIFACT }}-${{ steps.projectInfo.outputs.PROJECT_VERSION }}-shaded.jar
+          asset_content_type: application/java-archive
+      - name: Upload Zip
+        id: upload-zip
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./target/${{ steps.projectInfo.outputs.PROJECT_ARTIFACT }}-${{ steps.projectInfo.outputs.PROJECT_VERSION }}-anyos.zip
+          asset_name: ${{ steps.projectInfo.outputs.PROJECT_ARTIFACT }}-${{ steps.projectInfo.outputs.PROJECT_VERSION }}-anyos.zip
+          asset_content_type: application/zip
+      - name: Upload EXE
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./target/${{ steps.projectInfo.outputs.PROJECT_ARTIFACT }}-${{ steps.projectInfo.outputs.PROJECT_VERSION }}-anyos.tar.gz
+          asset_name: ${{ steps.projectInfo.outputs.PROJECT_ARTIFACT }}-${{ steps.projectInfo.outputs.PROJECT_VERSION }}-anyos.tar.gz
+          asset_content_type: application/tar+gzip
+      - name: Upload EXE
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./target/${{ steps.projectInfo.outputs.PROJECT_ARTIFACT }}-${{ steps.projectInfo.outputs.PROJECT_VERSION }}-installer.exe
+          asset_name: ${{ steps.projectInfo.outputs.PROJECT_ARTIFACT }}-${{ steps.projectInfo.outputs.PROJECT_VERSION }}-installer.exe
+          asset_content_type: application/tar+gzip
+
+
+
