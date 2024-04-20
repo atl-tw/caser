@@ -19,7 +19,7 @@ jobs:
       - name: Install tools
         run: |
           apt-get update
-          apt-get install -y jq git libxml2-utils nsis curl zip unzip tar gzip
+          apt-get install -y jq git libxml2-utils nsis curl zip unzip tar gzip gcc
       - name: Store Project Information
         id: projectInfo
         run: |
@@ -37,7 +37,7 @@ jobs:
         run: |
          ./mvnw -U --batch-mode versions:set dependency:tree -DnewVersion=${{ steps.projectInfo.outputs.PROJECT_VERSION }}
       - name: Build
-        run:  JAVA_HOME=/github/home/.sdkman/candidates/java/current/ ./mvnw --batch-mode -Pnative -Dagent=true clean install
+        run:  JAVA_HOME=/github/home/.sdkman/candidates/java/current/ ./mvnw --batch-mode -Pnative -Dagent=true -Dosname.short=Linux clean install
       - name: release
         uses: actions/create-release@v1
         id: create_release
