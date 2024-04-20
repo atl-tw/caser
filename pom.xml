@@ -8,7 +8,8 @@
     <packaging>jar</packaging>
 
     <name>caser</name>
-    <url>http://maven.apache.org</url>
+    <url>https://github.com/atl-tw</url>
+    <description>A command line tool for converting between common multiword token formats</description>
 
     <properties>
         <java.version>11</java.version>
@@ -141,7 +142,7 @@
                             <goal>single</goal>
                         </goals>
                         <configuration>
-                            <finalName>${project.artifactId}_${project.version}</finalName>
+                            <finalName>${project.artifactId}-${project.version}</finalName>
                             <appendAssemblyId>true</appendAssemblyId>
                             <attach>true</attach>
                             <descriptors>
@@ -163,24 +164,47 @@
                         <goals>
                             <goal>replace</goal>
                         </goals>
+                        <configuration>
+                            <file>src/main/nsis/install.nsi</file>
+                            <outputFile>
+                                target/${project.artifactId}-${project.version}-anyos/${project.artifactId}-${project.version}/install.nsi
+                            </outputFile>
+                            <replacements>
+                                <replacement>
+                                    <token>@artifactId@</token>
+                                    <value>${project.artifactId}</value>
+                                </replacement>
+                                <replacement>
+                                    <token>@version@</token>
+                                    <value>${project.version}</value>
+                                </replacement>
+                            </replacements>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>prepare-tap</id>
+                        <goals>
+                            <goal>replace</goal>
+                        </goals>
+                        <configuration>
+                            <file>src/main/brew/Formula.rb</file>
+                            <outputFile>
+                                brew/${project.artifactId}/Formula/${project.artifactId}.rb
+                            </outputFile>
+                            <replacements>
+                                <replacement>
+                                    <token>@artifactId@</token>
+                                    <value>${project.artifactId}</value>
+                                </replacement>
+                                <replacement>
+                                    <token>@version@</token>
+                                    <value>${project.version}</value>
+                                </replacement>
+                            </replacements>
+                        </configuration>
                     </execution>
                 </executions>
-                <configuration>
-                    <file>src/main/nsis/install.nsi</file>
-                    <outputFile>
-                        target/${project.artifactId}_${project.version}-anyos/${project.artifactId}_${project.version}/install.nsi
-                    </outputFile>
-                    <replacements>
-                        <replacement>
-                            <token>@artifactId@</token>
-                            <value>${project.artifactId}</value>
-                        </replacement>
-                        <replacement>
-                            <token>@version@</token>
-                            <value>${project.version}</value>
-                        </replacement>
-                    </replacements>
-                </configuration>
+
             </plugin>
             <plugin>
                 <groupId>org.digitalmediaserver</groupId>
@@ -202,10 +226,32 @@
                         <configuration>
                             <attachArtifact>true</attachArtifact>
                             <scriptFile>
-                                target/${project.artifactId}_${project.version}-anyos/${project.artifactId}_${project.version}/install.nsi
+                                target/${project.artifactId}-${project.version}-anyos/${project.artifactId}-${project.version}/install.nsi
                             </scriptFile>
                             <outputFile>${project.artifactId}-${project.version}-installer.exe</outputFile>
                             <attachArtifact>false</attachArtifact>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.1.1</version>
+                <executions>
+                    <execution>
+                        <id>sha256</id>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <phase>pre-integration-test</phase>
+                        <configuration>
+                            <executable>bash</executable>
+                            <workingDirectory>${project.build.directory}</workingDirectory>
+                            <arguments>
+                                <argument>-c</argument>
+                                <argument>sha256sum ${project.artifactId}-${project.version}*.* &gt;&gt; ${project.artifactId}-${project.version}-hashes.txt</argument>
+                            </arguments>
                         </configuration>
                     </execution>
                 </executions>
@@ -242,6 +288,11 @@
                                     </file>
                                     <type>exe</type>
                                     <classifier>installer</classifier>
+                                </artifact>
+                                <artifact>
+                                    <file>${project.build.directory}/${project.artifactId}-${project.version}-hashes.txt</file>
+                                    <type>txt</type>
+                                    <classifier>hashes</classifier>
                                 </artifact>
                             </artifacts>
                         </configuration>

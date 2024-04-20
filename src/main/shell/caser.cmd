@@ -11,4 +11,4 @@ if %errorlevel% neq 0 (
 
 SET SCRIPT_DIR=%~dp0
 
-java %JAVA_OPTS% -cp %SCRIPT_DIR%/lib/*" ${main.class} %*
+java %JAVA_OPTS% -cp %SCRIPT_DIR%\..\lib\*" ${main.class} %*

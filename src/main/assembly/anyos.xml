@@ -26,7 +26,7 @@
         </fileSet>
         <fileSet>
             <directory>src/main/shell</directory>
-            <outputDirectory></outputDirectory>
+            <outputDirectory>/bin</outputDirectory>
             <filtered>true</filtered>
         </fileSet>
         <fileSet>

@@ -11,7 +11,7 @@ fi
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${SCRIPT_PATH}" )" &> /dev/null && pwd )
 
-java $JAVA_OPTS -cp "$SCRIPT_DIR/lib/*" ${main.class} ${1+"$@"}
+java $JAVA_OPTS -cp "$SCRIPT_DIR/../lib/*" ${main.class} ${1+"$@"}
 ex_code=$?
 
 echo >&2
