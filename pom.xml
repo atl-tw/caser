@@ -346,7 +346,7 @@
                             </execution>
                         </executions>
                         <configuration>
-                            <imageName>${project.artifactId}-${osname.short}-${os.arch}</imageName>
+                            <imageName>${project.artifactId}-${project.version}-${osname.short}-${os.arch}</imageName>
                             <pluginArtifacts>
                                 <artifact>${project.artifactId}-${osname.short}-${os.arch}</artifact>
                             </pluginArtifacts>
