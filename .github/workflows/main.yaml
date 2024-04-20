@@ -37,7 +37,7 @@ jobs:
         run: |
          ./mvnw -U --batch-mode versions:set dependency:tree -DnewVersion=${{ steps.projectInfo.outputs.PROJECT_VERSION }}
       - name: Build
-        run:  JAVA_HOME=/github/home/.sdkman/candidates/java/current/ ./mvnw --batch-mode -Pnative -Dagent=true -Dosname.short=Linux clean install
+        run:  ./mvnw --batch-mode -Pnative -Dagent=true -Dosname.short=Linux clean install
       - name: release
         uses: actions/create-release@v1
         id: create_release
@@ -128,5 +128,12 @@ jobs:
           github-token: ${{ github.token }}
       - run: java -version
       - name: Build
-        run: ./mvnw --batch-mode -Pnative -Dagent=true "-Dosname.short=Windows" clean install
-
+        run: ./mvnw --batch-mode -Pnative -Dagent=true "-Dosname.short=Windows" clean package && ls -al target
+      - name: Upload Bin
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{maven-build.outputs.upload_url }}
+          asset_path: ./target/${{ maven-build.outputs.PROJECT_ARTIFACT }}-Windows-amd64.exe
+          asset_name: ${{ maven-build.outputs.PROJECT_ARTIFACT }}-${{ maven-build.outputs.PROJECT_VERSION }}-Linux-amd64.exe
