@@ -231,7 +231,7 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./target/${{ needs.linux-build.outputs.PROJECT_ARTIFACT }}-${{ needs.project-info.outputs.PROJECT_VERSION }}-Mac-x86_64
-          asset_name: ${{ needs.linux-build.outputs.PROJECT_ARTIFACT }}-${{ needs.linux-build.outputs.PROJECT_VERSION }}-Mac-x86_64.bin
+          asset_name: ${{ needs.project-info.outputs.PROJECT_ARTIFACT }}-${{ needs.project-info.outputs.PROJECT_VERSION }}-Mac-x86_64.bin
           asset_content_type: application/octet-stream
       - name: Upload Bin
         uses: actions/upload-release-asset@v1
@@ -240,5 +240,5 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./target/${{ needs.project-info.outputs.PROJECT_ARTIFACT }}-${{ needs.project-info.outputs.PROJECT_VERSION }}-Windows-amd64.exe
-          asset_name: ${{ needs.linux-build.outputs.PROJECT_ARTIFACT }}-${{ needs.linux-build.outputs.PROJECT_VERSION }}-Windows-amd64.exe
+          asset_name: ${{ needs.project-info.outputs.PROJECT_ARTIFACT }}-${{ needs.project-info.outputs.PROJECT_VERSION }}-Windows-amd64.exe
           asset_content_type: application/octet-stream
