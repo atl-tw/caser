@@ -264,4 +264,4 @@ jobs:
           mkdir -p ~/.m2
           echo "<settings><servers><server><id>gh</id><username>${{github.actor}}</username><password>${{github.token}}</password></server></servers></settings>" > ~/.m2/settings.xml
           REPO="gh::default::https://maven.pkg.github.com/${{github.repository}}"
-          mvn deploy -DaltReleaseDeploymentRepository="${REPO}" -DaltSnapshotDeploymentRepository="${REPO}"
+          ./mvnw deploy -DaltReleaseDeploymentRepository="${REPO}" -DaltSnapshotDeploymentRepository="${REPO}"
