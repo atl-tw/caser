@@ -115,7 +115,7 @@ jobs:
           asset_content_type: text/plain
 
   windows-build:
-    # needs: maven-build
+    needs: maven-build
     runs-on: windows-latest
     steps:
       - name: Checkout Code
