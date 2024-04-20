@@ -149,6 +149,8 @@ jobs:
           
   release:
     runs-on: ubuntu-latest
+    container:
+      image: ubuntu:latest
     needs: [project-info, linux-build, windows-build, mac-build]
     steps:
       - name: Checkout Code
@@ -248,6 +250,10 @@ jobs:
           distribution: 'graalvm'
           github-token: ${{ github.token }}
       - run: which java && java -version
+      - name: Install tools
+        run: |
+           apt-get update
+           apt-get install -y jq git libxml2-utils nsis curl zip unzip tar gzip gcc zlib1g-dev
       - name: Set Version
         run: |
           ./mvnw -U --batch-mode versions:set dependency:tree -DnewVersion=${{ needs.project-info.outputs.PROJECT_VERSION }}
