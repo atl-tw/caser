@@ -101,7 +101,7 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./target/${{ steps.projectInfo.outputs.PROJECT_ARTIFACT }}-${{ steps.projectInfo.outputs.PROJECT_VERSION }}-Linux-amd64
+          asset_path: ./target/${{ steps.projectInfo.outputs.PROJECT_ARTIFACT }}-Linux-amd64
           asset_name: ${{ steps.projectInfo.outputs.PROJECT_ARTIFACT }}-${{ steps.projectInfo.outputs.PROJECT_VERSION }}-Linux-amd64.bin
           asset_content_type: application/octet-stream
       - name: Upload Hashes
