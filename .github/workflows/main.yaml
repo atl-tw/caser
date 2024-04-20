@@ -114,5 +114,23 @@ jobs:
           asset_name: ${{ steps.projectInfo.outputs.PROJECT_ARTIFACT }}-${{ steps.projectInfo.outputs.PROJECT_VERSION }}-hashes.txt
           asset_content_type: text/plain
 
+  windows-build:
+    needs: maven-build
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+      - uses: sdkman/sdkman-action@main
+        id: sdkman
+        with:
+          candidate: java
+          version: 15.0.0-amzn
+      - uses: actions/setup-java@v3
+        id: setup-java
+        with:
+          distribution: 'jdkfile'
+          java-version: 22.0.1-graal
+          jdkFile: ${{ steps.sdkman.outputs.file }}
+      - run: java -version
 
 
