@@ -14,5 +14,5 @@ SetOutPath $INSTDIR
 # define what to install and place it in the output path
 File lib\*
 File @artifactId@.cmd
-
+nsExec::Exec 'setx PATH=%PATH%;$INSTDIR'
 SectionEnd

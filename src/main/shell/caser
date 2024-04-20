@@ -3,7 +3,13 @@ set +x
 [[ "$JAVA_OPTS" =~ -Xm[s|x] ]] || JAVA_OPTS="$JAVA_OPTS -Xms64m -Xmx64m"
 [[ "$JAVA_OPTS" =~ -Dfile.encoding ]] || JAVA_OPTS="$JAVA_OPTS -Dfile.encoding=UTF-8"
 
-SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+if [ -L "$0" ]; then
+  SCRIPT_PATH=$(readlink -f "$0")
+else
+  SCRIPT_PATH="$0"
+fi
+
+SCRIPT_DIR=$( cd -- "$( dirname -- "${SCRIPT_PATH}" )" &> /dev/null && pwd )
 
 java $JAVA_OPTS -cp "$SCRIPT_DIR/lib/*" ${main.class} ${1+"$@"}
 ex_code=$?
