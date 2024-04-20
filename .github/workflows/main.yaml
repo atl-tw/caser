@@ -5,14 +5,13 @@ on:
     branches: ["main"]
 
 jobs:
-  linux-build:
+  project-info:
     runs-on: ubuntu-latest
     container:
       image: ubuntu:latest
     outputs:
-      PROJECT_ARTIFACT: ${{ steps.projectInfo.outputs.PROJECT_ARTIFACT }}
-      PROJECT_VERSION: ${{ steps.projectInfo.outputs.PROJECT_VERSION }}
-      upload_url: ${{ steps.create_release.outputs.upload_url }}
+      PROJECT_ARTIFACT: ${{ needs.project-info.outputs.PROJECT_ARTIFACT }}
+      PROJECT_VERSION: ${{ needs.project-info.outputs.PROJECT_VERSION }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
@@ -29,7 +28,18 @@ jobs:
           PROJECT_ARTIFACT=$(xmllint --xpath '/*[local-name()="project"]/*[local-name()="artifactId"]/text()' pom.xml)
           echo "PROJECT_ARTIFACT=${PROJECT_ARTIFACT}"
           echo "PROJECT_ARTIFACT=${PROJECT_ARTIFACT}" >> $GITHUB_OUTPUT
-          git config --global --add safe.directory `pwd`
+  linux-build:
+    needs: project-info
+    runs-on: ubuntu-latest
+    container:
+      image: ubuntu:latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+      - name: Install tools
+        run: |
+          apt-get update
+          apt-get install -y jq git libxml2-utils nsis curl zip unzip tar gzip gcc zlib1g-dev
       - uses: graalvm/setup-graalvm@v1
         with:
           java-version: '22'
@@ -38,87 +48,49 @@ jobs:
       - run: which java && java -version
       - name: Set Version
         run: |
-         ./mvnw -U --batch-mode versions:set dependency:tree -DnewVersion=${{ steps.projectInfo.outputs.PROJECT_VERSION }}
+         ./mvnw -U --batch-mode versions:set dependency:tree -DnewVersion=${{ needs.project-info.outputs.PROJECT_VERSION }}
       - name: Build
         run:  ./mvnw --batch-mode -Pnative -Dagent=true -Dosname.short=Linux clean install
-      - name: release
-        uses: actions/create-release@v1
-        id: create_release
+      - name: 'Upload Jar'
+        uses: actions/upload-artifact@v4
         with:
-          draft: false
-          prerelease: false
-          release_name: ${{ steps.projectInfo.outputs.PROJECT_VERSION }}
-          tag_name: ${{ steps.projectInfo.outputs.PROJECT_VERSION }}
-          body_path: README.md
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-      - name: Upload JAR
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+          name: ${{ needs.project-info.outputs.PROJECT_ARTIFACT }}-${{ needs.project-info.outputs.PROJECT_VERSION }}.jar
+          path: ./target/${{ needs.project-info.outputs.PROJECT_ARTIFACT }}-${{ needs.project-info.outputs.PROJECT_VERSION }}.jar
+          retention-days: 1
+      - name: 'Upload Shaded'
+        uses: actions/upload-artifact@v4
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./target/${{ steps.projectInfo.outputs.PROJECT_ARTIFACT }}-${{ steps.projectInfo.outputs.PROJECT_VERSION }}.jar
-          asset_name: ${{ steps.projectInfo.outputs.PROJECT_ARTIFACT }}-${{ steps.projectInfo.outputs.PROJECT_VERSION }}.jar
-          asset_content_type: application/java-archive
-      - name: Upload Shaded JAR
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+          name: ${{ needs.project-info.outputs.PROJECT_ARTIFACT }}-${{ needs.project-info.outputs.PROJECT_VERSION }}-shaded.jar
+          path: ./target/${{ needs.project-info.outputs.PROJECT_ARTIFACT }}-${{ needs.project-info.outputs.PROJECT_VERSION }}-shaded.jar
+          retention-days: 1
+      - name: 'Upload Zip'
+        uses: actions/upload-artifact@v4
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./target/${{ steps.projectInfo.outputs.PROJECT_ARTIFACT }}-${{ steps.projectInfo.outputs.PROJECT_VERSION }}-shaded.jar
-          asset_name: ${{ steps.projectInfo.outputs.PROJECT_ARTIFACT }}-${{ steps.projectInfo.outputs.PROJECT_VERSION }}-shaded.jar
-          asset_content_type: application/java-archive
-      - name: Upload Zip
-        id: upload-zip
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+          name: ${{ needs.project-info.outputs.PROJECT_ARTIFACT }}-${{ needs.project-info.outputs.PROJECT_VERSION }}-anyos.zip
+          path:  ./target/${{ needs.project-info.outputs.PROJECT_ARTIFACT }}-${{ needs.project-info.outputs.PROJECT_VERSION }}-anyos.zip
+          retention-days: 1
+      - name: 'Upload TGZ'
+        uses: actions/upload-artifact@v4
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./target/${{ steps.projectInfo.outputs.PROJECT_ARTIFACT }}-${{ steps.projectInfo.outputs.PROJECT_VERSION }}-anyos.zip
-          asset_name: ${{ steps.projectInfo.outputs.PROJECT_ARTIFACT }}-${{ steps.projectInfo.outputs.PROJECT_VERSION }}-anyos.zip
-          asset_content_type: application/zip
-      - name: Upload TGZ
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+          name: ${{ needs.project-info.outputs.PROJECT_ARTIFACT }}-${{ needs.project-info.outputs.PROJECT_VERSION }}-anyos.tar.gz
+          path: ./target/${{ needs.project-info.outputs.PROJECT_ARTIFACT }}-${{ needs.project-info.outputs.PROJECT_VERSION }}-anyos.tar.gz
+          retention-days: 1
+      - name: 'Upload Windows Installer'
+        uses: actions/upload-artifact@v4
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./target/${{ steps.projectInfo.outputs.PROJECT_ARTIFACT }}-${{ steps.projectInfo.outputs.PROJECT_VERSION }}-anyos.tar.gz
-          asset_name: ${{ steps.projectInfo.outputs.PROJECT_ARTIFACT }}-${{ steps.projectInfo.outputs.PROJECT_VERSION }}-anyos.tar.gz
-          asset_content_type: application/tar+gzip
-      - name: Upload EXE
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+          name: ${{ needs.project-info.outputs.PROJECT_ARTIFACT }}-${{ needs.project-info.outputs.PROJECT_VERSION }}-installer.exe
+          path: ./target/${{ needs.project-info.outputs.PROJECT_ARTIFACT }}-${{ needs.project-info.outputs.PROJECT_VERSION }}-installer.exe
+          retention-days: 1
+      - name: 'Upload Linux Binary'
+        uses: actions/upload-artifact@v4
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./target/${{ steps.projectInfo.outputs.PROJECT_ARTIFACT }}-${{ steps.projectInfo.outputs.PROJECT_VERSION }}-installer.exe
-          asset_name: ${{ steps.projectInfo.outputs.PROJECT_ARTIFACT }}-${{ steps.projectInfo.outputs.PROJECT_VERSION }}-installer.exe
-          asset_content_type: application/tar+gzip
-      - name: Upload Bin
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./target/${{ steps.projectInfo.outputs.PROJECT_ARTIFACT }}-Linux-amd64
-          asset_name: ${{ steps.projectInfo.outputs.PROJECT_ARTIFACT }}-${{ steps.projectInfo.outputs.PROJECT_VERSION }}-Linux-amd64.bin
-          asset_content_type: application/octet-stream
-      - name: Upload Hashes
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./target/${{ steps.projectInfo.outputs.PROJECT_ARTIFACT }}-${{ steps.projectInfo.outputs.PROJECT_VERSION }}-hashes.txt
-          asset_name: ${{ steps.projectInfo.outputs.PROJECT_ARTIFACT }}-${{ steps.projectInfo.outputs.PROJECT_VERSION }}-hashes.txt
-          asset_content_type: text/plain
+          name: ${{ needs.project-info.outputs.PROJECT_ARTIFACT }}-${{ needs.project-info.outputs.PROJECT_VERSION }}-Linux-amd64.bin
+          path: ./target/${{ needs.project-info.outputs.PROJECT_ARTIFACT }}-${{ needs.project-info.outputs.PROJECT_VERSION }}-Linux-amd64
+          retention-days: 1
+
 
   windows-build:
-    needs: linux-build
+    needs: project-info
     runs-on: windows-latest
     steps:
       - name: Checkout Code
@@ -132,17 +104,14 @@ jobs:
       - run: java -version
       - name: Build
         run: ./mvnw --batch-mode -Pnative -Dagent=true  clean package && ls target
-      - name: Upload Bin
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+      - name: 'Upload Windows Binary'
+        uses: actions/upload-artifact@v4
         with:
-          upload_url: ${{needs.linux-build.outputs.upload_url }}
-          asset_path: ./target/${{ needs.linux-build.outputs.PROJECT_ARTIFACT }}-Windows-amd64.exe
-          asset_name: ${{ needs.linux-build.outputs.PROJECT_ARTIFACT }}-${{ needs.linux-build.outputs.PROJECT_VERSION }}-Windows-amd64.exe
-          asset_content_type: application/octet-stream
+          name: ${{ needs.project-info.outputs.PROJECT_ARTIFACT }}-${{ needs.project-info.outputs.PROJECT_VERSION }}-Windows-amd64.exe
+          path: ./target/${{ needs.project-info.outputs.PROJECT_ARTIFACT }}-${{ needs.project-info.outputs.PROJECT_VERSION }}-Windows-amd64.exe
+          retention-days: 1
   mac-build:
-    needs: linux-build
+    needs: project-info
     runs-on: macos-latest
     steps:
       - name: Checkout Code
@@ -156,12 +125,108 @@ jobs:
       - run: brew install makensis
       - name: Build
         run: ./mvnw --batch-mode -Pnative -Dagent=true clean package && ls target
+
+          
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+      - name: Download All Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: target
+          merge-multiple: true
+      - name: release
+        uses: actions/create-release@v1
+        id: create_release
+        with:
+          draft: false
+          prerelease: false
+          release_name: ${{ needs.project-info.outputs.PROJECT_VERSION }}
+          tag_name: ${{ needs.project-info.outputs.PROJECT_VERSION }}
+          body_path: README.md
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - name: Upload JAR
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./target/${{ needs.project-info.outputs.PROJECT_ARTIFACT }}-${{ needs.project-info.outputs.PROJECT_VERSION }}.jar
+          asset_name: ${{ needs.project-info.outputs.PROJECT_ARTIFACT }}-${{ needs.project-info.outputs.PROJECT_VERSION }}.jar
+          asset_content_type: application/java-archive
+      - name: Upload Shaded JAR
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./target/${{ needs.project-info.outputs.PROJECT_ARTIFACT }}-${{ needs.project-info.outputs.PROJECT_VERSION }}-shaded.jar
+          asset_name: ${{ needs.project-info.outputs.PROJECT_ARTIFACT }}-${{ needs.project-info.outputs.PROJECT_VERSION }}-shaded.jar
+          asset_content_type: application/java-archive
+      - name: Upload Zip
+        id: upload-zip
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./target/${{ needs.project-info.outputs.PROJECT_ARTIFACT }}-${{ needs.project-info.outputs.PROJECT_VERSION }}-anyos.zip
+          asset_name: ${{ needs.project-info.outputs.PROJECT_ARTIFACT }}-${{ needs.project-info.outputs.PROJECT_VERSION }}-anyos.zip
+          asset_content_type: application/zip
+      - name: Upload TGZ
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./target/${{ needs.project-info.outputs.PROJECT_ARTIFACT }}-${{ needs.project-info.outputs.PROJECT_VERSION }}-anyos.tar.gz
+          asset_name: ${{ needs.project-info.outputs.PROJECT_ARTIFACT }}-${{ needs.project-info.outputs.PROJECT_VERSION }}-anyos.tar.gz
+          asset_content_type: application/tar+gzip
+      - name: Upload EXE
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./target/${{ needs.project-info.outputs.PROJECT_ARTIFACT }}-${{ needs.project-info.outputs.PROJECT_VERSION }}-installer.exe
+          asset_name: ${{ needs.project-info.outputs.PROJECT_ARTIFACT }}-${{ needs.project-info.outputs.PROJECT_VERSION }}-installer.exe
+          asset_content_type: application/tar+gzip
       - name: Upload Bin
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
-          upload_url: ${{needs.linux-build.outputs.upload_url }}
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./target/${{ needs.project-info.outputs.PROJECT_ARTIFACT }}-Linux-amd64
+          asset_name: ${{ needs.project-info.outputs.PROJECT_ARTIFACT }}-${{ needs.project-info.outputs.PROJECT_VERSION }}-Linux-amd64.bin
+          asset_content_type: application/octet-stream
+      - name: Upload Bin
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{steps.create-release.outputs.upload_url }}
+          asset_path: ./target/${{ needs.linux-build.outputs.PROJECT_ARTIFACT }}-Mac-x86_64.bin
+          asset_name: ${{ needs.linux-build.outputs.PROJECT_ARTIFACT }}-${{ needs.linux-build.outputs.PROJECT_VERSION }}-Mac-x86_64.bin
+          asset_content_type: application/octet-stream
+      - name: Upload Bin
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{steps.create-release.outputs.upload_url }}
           asset_path: ./target/${{ needs.linux-build.outputs.PROJECT_ARTIFACT }}-Mac-x86_64
           asset_name: ${{ needs.linux-build.outputs.PROJECT_ARTIFACT }}-${{ needs.linux-build.outputs.PROJECT_VERSION }}-Mac-x86_64
+          asset_content_type: application/octet-stream
+      - name: Upload Bin
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{steps.create-release.outputs.upload_url }}
+          asset_path: ./target/${{ needs.linux-build.outputs.PROJECT_ARTIFACT }}-Windows-amd64.exe
+          asset_name: ${{ needs.linux-build.outputs.PROJECT_ARTIFACT }}-${{ needs.linux-build.outputs.PROJECT_VERSION }}-Windows-amd64.exe
           asset_content_type: application/octet-stream
