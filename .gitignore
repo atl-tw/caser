@@ -1,4 +1,4 @@
-target/
+targtarget/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
@@ -40,3 +40,4 @@ build/
 /dependency-reduced-pom.xml
 /.idea/
 /.mvn/wrapper/maven-wrapper.jar
+/caser}.bgv

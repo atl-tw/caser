@@ -3,7 +3,6 @@ set +x
 [[ "$JAVA_OPTS" =~ -Xm[s|x] ]] || JAVA_OPTS="$JAVA_OPTS -Xms64m -Xmx64m"
 [[ "$JAVA_OPTS" =~ -Dfile.encoding ]] || JAVA_OPTS="$JAVA_OPTS -Dfile.encoding=UTF-8"
 
-export JAVA_TOOL_OPTIONS
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 java $JAVA_OPTS -jar $SCRIPT_DIR/lib/${project.artifactId}-${project.version}-shaded.jar ${1+"$@"}

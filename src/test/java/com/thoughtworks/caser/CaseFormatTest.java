@@ -14,7 +14,7 @@ public class CaseFormatTest  {
     assertThat(CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.JAVA_TYPE, upperSnake)).isEqualTo("upper.snake.Case");
 
     assertThat(CaseFormat.JAVA_TYPE.to(CaseFormat.LOWER_UNDERSCORE, CaseFormatTest.class.getCanonicalName()))
-        .isEqualTo("com_thoughtworks_caser_CaseformatTest");
+        .isEqualTo("com_thoughtworks_caser_caseformattest");
   }
 
 }
