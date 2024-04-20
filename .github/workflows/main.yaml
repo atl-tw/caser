@@ -129,7 +129,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ needs.project-info.outputs.PROJECT_ARTIFACT }}-${{ needs.project-info.outputs.PROJECT_VERSION }}-Mac-x86_64
-          path: ./target/${{ needs.project-info.outputs.PROJECT_ARTIFACT }}-${{ needs.project-info.outputs.PROJECT_VERSION }-Mac-x86_64.bin
+          path: ./target/${{ needs.project-info.outputs.PROJECT_ARTIFACT }}-${{ needs.project-info.outputs.PROJECT_VERSION }}-Mac-x86_64.bin
           
   release:
     runs-on: ubuntu-latest
