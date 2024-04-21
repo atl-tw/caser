@@ -301,6 +301,16 @@
             </plugin>
         </plugins>
     </build>
+    <distributionManagement>
+        <repository>
+            <id>gh</id>
+            <url>https://maven.pkg.github.com/atl-tw/caser</url>
+        </repository>
+        <snapshotRepository>
+            <id>gh</id>
+            <url>https://maven.pkg.github.com/atl-tw/caser</url>
+        </snapshotRepository>
+    </distributionManagement>
     <profiles>
         <profile>
             <id>native</id>
