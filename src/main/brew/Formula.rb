@@ -11,6 +11,6 @@ class @name@ < Formula
 
   def install
     bin.install 'bin/@artifactId@' => '@artifactId@'
-    lib.install 'lib/*'
+    prefix.install 'lib'
   end
 end
