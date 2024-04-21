@@ -8,7 +8,7 @@
     <packaging>jar</packaging>
 
     <name>Caser</name>
-    <url>https://github.com/atl-tw</url>
+    <url>https://github.com/atl-tw/caser</url>
     <description>A command line tool for converting between common multiword token formats</description>
 
     <properties>
@@ -22,6 +22,7 @@
         <main.class>com.thoughtworks.caser.App</main.class>
         <brew.asset.url>PROVIDE ME</brew.asset.url>
         <brew.asset.hash>PROVIDE ME</brew.asset.hash>
+        <brew.formula.name>Caser</brew.formula.name>
     </properties>
 
     <dependencies>
@@ -215,7 +216,17 @@
                                 <replacement>
                                     <!--suppress UnresolvedMavenProperty -->
                                     <token>@name@</token>
-                                    <value>${project.name}</value>
+                                    <value>${brew.formula.name}</value>
+                                </replacement>
+                                <replacement>
+                                    <!--suppress UnresolvedMavenProperty -->
+                                    <token>@description@</token>
+                                    <value>${project.description}</value>
+                                </replacement>
+                                <replacement>
+                                    <!--suppress UnresolvedMavenProperty -->
+                                    <token>@homepage@</token>
+                                    <value>${project.url}</value>
                                 </replacement>
                             </replacements>
                         </configuration>

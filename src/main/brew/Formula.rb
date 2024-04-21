@@ -1,8 +1,8 @@
 require "formula"
 
 class @name@ < Formula
-  desc 'A command line tool for converting between common multiword token formats'
-  homepage 'https://github.com/atl-tw'
+  desc '@description@'
+  homepage '@homepage@'
   url "@asseturl@"
   sha256 "@assethash@"
   version '@version@'

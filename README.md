@@ -39,10 +39,26 @@ The outputs of this build include:
  * Zip and TGZ assembly of a distribution suitable for any OS.
  * A Windows installer built with Nullsoft Scriptable Install System
  * A native binary build with GraalVM's native-image
+ * A Homebrew formula for Mac (Published to a Tap with GHA)
+ * The usual Maven repository suspects (Published to a repo with GHA)
 
 
-Install Tools:
---------------
+Installation:
+-------------
+
+You can find binaries for Windows, Mac, and Linux (for Intel) on the Releases page. 
+
+For Mac you can also install via Homebrew:
+
+```bash
+brew tap atl-tw/tap
+brew insall caser
+```
+
+
+
+Build Tools:
+------------
 
 Mac:
 
