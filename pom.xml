@@ -7,7 +7,7 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>caser</name>
+    <name>Caser</name>
     <url>https://github.com/atl-tw</url>
     <description>A command line tool for converting between common multiword token formats</description>
 
@@ -211,6 +211,11 @@
                                     <!--suppress UnresolvedMavenProperty -->
                                     <token>@assethash@</token>
                                     <value>${brew.asset.hash}</value>
+                                </replacement>
+                                <replacement>
+                                    <!--suppress UnresolvedMavenProperty -->
+                                    <token>@name@</token>
+                                    <value>${project.name}</value>
                                 </replacement>
                             </replacements>
                         </configuration>

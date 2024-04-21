@@ -264,7 +264,7 @@ jobs:
           mkdir -p ~/.m2
           echo "<settings><servers><server><id>gh</id><username>${{secrets.MAVEN_USER}}</username><password>${{secrets.MAVEN_TOKEN}}</password></server></servers></settings>" > settings.xml
           ZIP_SHA=$(shasum -a 256 ./target/${{ needs.project-info.outputs.PROJECT_ARTIFACT }}-${{ needs.project-info.outputs.PROJECT_VERSION }}-anyos.zip | awk '{print $1}')
-          ./mvnw -s ./settings.xml -Dbrew.asset.url=${{ steps.upload-zip.outputs.browser_download_url}} -Dbrew.asset.hash=${{ steps.upload-zip.outputs.browser_download_url}} --batch-mode deploy
+          ./mvnw -s ./settings.xml -Dbrew.asset.url=${{ steps.upload-zip.outputs.browser_download_url}} -Dbrew.asset.hash=$ZIP_SHA --batch-mode deploy
       - name: Publish Homebrew
         env:
           DESTINATION_BRANCH: main

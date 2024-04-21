@@ -1,6 +1,6 @@
 require "formula"
 
-class @artifactId@ < Formula
+class @name@ < Formula
   desc 'A command line tool for converting between common multiword token formats'
   homepage 'https://github.com/atl-tw'
   url "@asseturl@"
