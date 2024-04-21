@@ -235,7 +235,7 @@ jobs:
           asset_path: ./target/${{ needs.project-info.outputs.PROJECT_ARTIFACT }}-${{ needs.project-info.outputs.PROJECT_VERSION }}-Mac-x86_64
           asset_name: ${{ needs.project-info.outputs.PROJECT_ARTIFACT }}-${{ needs.project-info.outputs.PROJECT_VERSION }}-Mac-x86_64.bin
           asset_content_type: application/octet-stream
-      - name: Upload Bin
+      - name: Upload Windows Bin
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ github.token }}
