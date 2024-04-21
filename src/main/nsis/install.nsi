@@ -3,7 +3,7 @@ Outfile "..\..\@artifactId@-@version@-installer.exe"
 
 # define the directory to install to, the desktop in this case as specified
 # by the predefined $DESKTOP variable
-InstallDir $PROGRAMFILES\caser
+InstallDir $PROGRAMFILES\@artifactId@
 
 # default section
 Section

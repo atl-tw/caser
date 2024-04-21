@@ -7,7 +7,7 @@ class @name@ < Formula
   sha256 "@assethash@"
   version '@version@'
 
-  # depends_on 'gnu-sed'
+  depends_on 'openjdk'
 
   def install
     bin.install 'bin/@artifactId@' => '@artifactId@'
