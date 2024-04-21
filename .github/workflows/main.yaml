@@ -273,8 +273,8 @@ jobs:
           COMMIT_EMAIL: rcooper@thoughtworks.com
           COMMIT_USERNAME: ${{secrets.MAVEN_USER}}
           COMMIT_MESSAGE: "Updating ${{ needs.project-info.outputs.PROJECT_ARTIFACT }} to -${{ needs.project-info.outputs.PROJECT_VERSION }}"
-          SOURCE_FILES: 'target/brew/${{ needs.project-info.outputs.PROJECT_ARTIFACT }}/'
-          DESTINATION_DIRECTORY: 'brew'
+          SOURCE_FILES: 'target/brew/${{ needs.project-info.outputs.PROJECT_ARTIFACT }}/*'
+          DESTINATION_DIRECTORY: ''
 
         run: |
           bin/deploy-homebrew.sh
