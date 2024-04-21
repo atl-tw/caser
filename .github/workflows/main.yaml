@@ -262,6 +262,5 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
           mkdir -p ~/.m2
-          echo "<settings><servers><server><id>gh</id><username>${{github.actor}}</username><password>${{github.token}}</password></server></servers></settings>" > ~/.m2/settings.xml
-          REPO="gh::default::https://maven.pkg.github.com/${{github.repository}}"
+          echo "<settings><servers><server><id>gh</id><username>${{secrets.MAVEN_USER}}</username><password>${{secrets.MAVEN_TOKEN}}</password></server></servers></settings>" > ~/.m2/settings.xml
           ./mvnw deploy -DaltReleaseDeploymentRepository="${REPO}" -DaltSnapshotDeploymentRepository="${REPO}"
