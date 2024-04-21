@@ -275,3 +275,15 @@ jobs:
           destination-repository: 'atl-tw/homebrew-tap'
           destination-directory: 'brew/${{ needs.project-info.outputs.PROJECT_ARTIFACT }}'
           commit-email: 'rcooper@thoughtworks.com'
+      - name: Publish Homebrew
+        env:
+          DESTINATION_BRANCH: main
+          DESTINATION_REPOSITORY:  'atl-tw/homebrew-tap'
+          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+          COMMIT_EMAIL: rcooper@thoughtworks.com
+          COMMIT_USERNAME: ${{secrets.MAVEN_USER}}
+          COMMIT_MESSAGE: "Updating ${{ needs.project-info.outputs.PROJECT_ARTIFACT }} to -${{ needs.project-info.outputs.PROJECT_VERSION }}"
+
+        run: |
+          bin/deploy-homebrew.sh
+          
