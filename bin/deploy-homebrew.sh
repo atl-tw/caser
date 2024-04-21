@@ -11,12 +11,13 @@ git clone --single-branch --branch "$DESTINATION_BRANCH" "https://$API_TOKEN_GIT
 ls -la "$CLONE_DIRECTORY"
 
 mkdir -p "$CLONE_DIRECTORY/$DESTINATION_DIRECTORY"
+cd ..
 cp -rvf $SOURCE_FILES "$CLONE_DIRECTORY/$DESTINATION_DIRECTORY"
 
-cd $CLONE_DIRECTORY
+cd target/$CLONE_DIRECTORY
 git add .
 git status
 
 git diff-index --quiet HEAD || git commit --message "$COMMIT_MESSAGE"
-
+git config --unset-all http.https://github.com/.extraheader
 git push origin --set-upstream "$DESTINATION_BRANCH"
