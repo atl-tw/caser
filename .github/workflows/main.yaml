@@ -266,13 +266,12 @@ jobs:
           ZIP_SHA=$(shasum -a 256 ./target/${{ needs.project-info.outputs.PROJECT_ARTIFACT }}-${{ needs.project-info.outputs.PROJECT_VERSION }}-anyos.zip | awk '{print $1}')
           ./mvnw -s ./settings.xml -Dbrew.asset.url=${{ steps.upload-zip.outputs.browser_download_url}} -Dbrew.asset.hash=${{ steps.upload-zip.outputs.browser_download_url}} --batch-mode deploy
       - name: Publish Homebrew
-        uses: dmnemec/copy_file_to_another_repo_action@main
+        uses: nkoppel/push-files-to-another-repository@1.1.0
         env:
-          API_TOKEN_GITHUB: $${{secrets.MAVEN_TOKEN}}
+          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
         with:
-          source_file: 'target/brew/${{ needs.project-info.outputs.PROJECT_ARTIFACT }}/Formula/${{ needs.project-info.outputs.PROJECT_ARTIFACT }}.rb'
-          destination_repo: 'atl-tw/homebrew-tap'
-          destination_folder: 'brew/${{ needs.project-info.outputs.PROJECT_ARTIFACT }}/Formula/${{ needs.project-info.outputs.PROJECT_ARTIFACT }}.rb'
-          user_email: 'rcooper@thoughtworks.com'
-          user_name: ${{secrets.MAVEN_USER}}
-          commit_message: 'Update ${{ needs.project-info.outputs.PROJECT_ARTIFACT }} ${{ needs.project-info.outputs.PROJECT_Version }} '
+          source-files: 'target/brew/${{ needs.project-info.outputs.PROJECT_ARTIFACT }}/'
+          destination-username:  ${{secrets.MAVEN_USER}}
+          destination-repository: 'atl-tw/homebrew-tap'
+          destination-directory: 'brew/${{ needs.project-info.outputs.PROJECT_ARTIFACT }}'
+          commit-email: 'rcooper@thoughtworks.com'
