@@ -263,4 +263,16 @@ jobs:
         run: |
           mkdir -p ~/.m2
           echo "<settings><servers><server><id>gh</id><username>${{secrets.MAVEN_USER}}</username><password>${{secrets.MAVEN_TOKEN}}</password></server></servers></settings>" > settings.xml
-          ./mvnw -s ./settings.xml --batch-mode deploy
+          ZIP_SHA=$(shasum -a 256 ./target/${{ needs.project-info.outputs.PROJECT_ARTIFACT }}-${{ needs.project-info.outputs.PROJECT_VERSION }}-anyos.zip | awk '{print $1}')
+          ./mvnw -s ./settings.xml -Dbrew.asset.url=${{ steps.upload-zip.outputs.browser_download_url}} -Dbrew.asset.hash=${{ steps.upload-zip.outputs.browser_download_url}} --batch-mode deploy
+      - name: Publish Homebrew
+        uses: dmnemec/copy_file_to_another_repo_action@main
+        env:
+          API_TOKEN_GITHUB: $${{secrets.MAVEN_TOKEN}}
+        with:
+          source_file: 'target/brew/${{ needs.project-info.outputs.PROJECT_ARTIFACT }}/Formula/${{ needs.project-info.outputs.PROJECT_ARTIFACT }}.rb'
+          destination_repo: 'atl-tw/homebrew-tap'
+          destination_folder: 'brew/${{ needs.project-info.outputs.PROJECT_ARTIFACT }}/Formula/${{ needs.project-info.outputs.PROJECT_ARTIFACT }}.rb'
+          user_email: 'rcooper@thoughtworks.com'
+          user_name: ${{secrets.MAVEN_USER}}
+          commit_message: 'Update ${{ needs.project-info.outputs.PROJECT_ARTIFACT }} ${{ needs.project-info.outputs.PROJECT_Version }} '

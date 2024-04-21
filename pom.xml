@@ -20,6 +20,8 @@
         <native.maven.plugin.version>0.9.28</native.maven.plugin.version>
         <imageName>caser</imageName>
         <main.class>com.thoughtworks.caser.App</main.class>
+        <brew.asset.url>PROVIDE ME</brew.asset.url>
+        <brew.asset.hash>PROVIDE ME</brew.asset.hash>
     </properties>
 
     <dependencies>
@@ -189,7 +191,7 @@
                         <configuration>
                             <file>src/main/brew/Formula.rb</file>
                             <outputFile>
-                                brew/${project.artifactId}/Formula/${project.artifactId}.rb
+                                target/brew/${project.artifactId}/Formula/${project.artifactId}.rb
                             </outputFile>
                             <replacements>
                                 <replacement>
@@ -199,6 +201,16 @@
                                 <replacement>
                                     <token>@version@</token>
                                     <value>${project.version}</value>
+                                </replacement>
+                                <replacement>
+                                    <!--suppress UnresolvedMavenProperty -->
+                                    <token>@asseturl@</token>
+                                    <value>${brew.asset.url}</value>
+                                </replacement>
+                                <replacement>
+                                    <!--suppress UnresolvedMavenProperty -->
+                                    <token>@assethash@</token>
+                                    <value>${brew.asset.hash}</value>
                                 </replacement>
                             </replacements>
                         </configuration>
