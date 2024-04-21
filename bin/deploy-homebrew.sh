@@ -20,5 +20,5 @@ git add .
 git status
 
 git diff-index --quiet HEAD || git commit --message "$COMMIT_MESSAGE"
-git config --unset-all http.https://github.com/.extraheader
+git config --unset-all http.https://github.com/.extraheader || echo "Failed"
 git push origin --set-upstream "$DESTINATION_BRANCH"
