@@ -277,5 +277,5 @@ jobs:
           DESTINATION_DIRECTORY: ''
 
         run: |
-          bin/deploy-homebrew.sh
+          .github/workflows/deploy-homebrew.sh
           
