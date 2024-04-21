@@ -164,7 +164,7 @@ jobs:
         uses: actions/create-release@v1
         id: create_release
         with:
-          draft: true
+          draft: false
           prerelease: false
           release_name: ${{ needs.project-info.outputs.PROJECT_VERSION }}
           tag_name: ${{ needs.project-info.outputs.PROJECT_VERSION }}
@@ -263,4 +263,4 @@ jobs:
         run: |
           mkdir -p ~/.m2
           echo "<settings><servers><server><id>gh</id><username>${{secrets.MAVEN_USER}}</username><password>${{secrets.MAVEN_TOKEN}}</password></server></servers></settings>" > settings.xml
-          ./mvnw -s ./settings.xml deploy
+          ./mvnw -s ./settings.xml --batch-mode deploy
